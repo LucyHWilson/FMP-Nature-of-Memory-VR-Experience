@@ -3,56 +3,49 @@ import { VRButton } from 'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/js
 
 let camera, scene, renderer;
 
-document.getElementById('startButton').onclick = () => {
-  document.getElementById('bg-music').play();
-  document.getElementById('startButton').style.display = 'none';
+document.getElementById("startButton").onclick = () => {
+  document.getElementById("bg-music").play();
+  document.getElementById("startButton").style.display = "none";
 
   init();
   animate();
 };
 
 function init() {
-  // Scene setup
   scene = new THREE.Scene();
 
-  // Camera setup
   camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
     0.1,
     1000
   );
-  camera.position.set(0, 1.6, 0); // Typical VR eye height
+  camera.position.set(0, 1.6, 0);
 
-  // Renderer setup
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.xr.enabled = true;
+
   document.body.appendChild(renderer.domElement);
   document.body.appendChild(VRButton.createButton(renderer));
 
-  // Load 360° equirectangular image as skybox
   const textureLoader = new THREE.TextureLoader();
-
   textureLoader.load('assets/IMAGE.jpg', function (texture) {
+    // Set correct color space so image isn't lightened
+    texture.encoding = THREE.sRGBEncoding;
 
+    // Use equirectangular mapping for 360 background
     texture.mapping = THREE.EquirectangularReflectionMapping;
+
+    // Improve texture sharpness
+    texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+
     scene.background = texture;
   });
 
-  // Add ambient light
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
-  scene.add(ambientLight);
-
-  // Handle window resize
-  window.addEventListener('resize', onWindowResize, false);
-}
-
-function onWindowResize() {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  // NO lights at all to keep image contrast as-is
 }
 
 function animate() {
