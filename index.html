@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>360° VR Experience</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="module" src="script.js"></script>
+  <style>
+    body { margin: 0; overflow: hidden; background: black; }
+    #startButton {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 999;
+      font-size: 18px;
+      padding: 10px 20px;
+      background-color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <button id="startButton">Start Experience</button>
+  <audio id="bg-music" loop>
+    <source src="assets/song.mp4" type="audio/mp4">
+    Your browser does not support the audio element.
+  </audio>
+</body>
+</html>
